@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日祝福</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标 -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        birthday: {
+                            pink: '#FF85A2',
+                            gold: '#FFD700',
+                            purple: '#C8A2C8',
+                            light: '#FFF0F3'
+                        }
+                    },
+                    fontFamily: {
+                        birthday: ['"Comic Sans MS"', '"Marker Felt"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .confetti {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                animation: fall 5s linear infinite;
+            }
+            .float {
+                animation: float 3s ease-in-out infinite;
+            }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .btn-pulse:hover {
+            animation: pulse 0.6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-birthday-light to-birthday-pink min-h-screen flex flex-col items-center justify-center p-4 font-birthday">
+    <!-- 页面标题 -->
+    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-birthday-purple text-shadow mb-8 text-center">
+        <i class="fa fa-gift mr-3 text-birthday-gold"></i>生日快乐
+    </h1>
+    
+    <!-- 主内容区 -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-xl max-w-md w-full text-center">
+        <!-- 生日蛋糕图片 -->
+        <div class="mb-8 flex justify-center">
+            <img src="https://picsum.photos/id/292/200/200" alt="生日蛋糕" class="w-40 h-40 object-cover rounded-full border-4 border-birthday-gold float">
+        </div>
+        
+        <!-- 祝福按钮 -->
+        <button id="wishBtn" class="btn-pulse bg-gradient-to-r from-birthday-pink to-birthday-purple text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg flex items-center justify-center mx-auto transition-all duration-300 hover:shadow-xl">
+            <i class="fa fa-birthday-cake mr-2 text-birthday-gold"></i>
+            点击送上祝福
+        </button>
+        
+        <!-- 祝福信息（初始隐藏） -->
+        <div id="wishMessage" class="mt-8 hidden">
+            <div class="p-6 bg-birthday-light rounded-xl border border-birthday-pink/30 animate-[fadeIn_1s_ease-in-out]">
+                <h2 class="text-2xl font-bold text-birthday-purple mb-4">🎉 生日快乐！🎉</h2>
+                <p class="text-gray-700 text-lg">愿你的每一天都充满阳光和欢笑，所有的梦想都能实现！</p>
+                <p class="mt-4 text-birthday-pink font-bold">祝你生日快乐，健康幸福！</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="mt-12 text-gray-600 text-center">
+        <p>用❤️制作的生日祝福页</p>
+    </footer>
+    
+    <script>
+        // 获取DOM元素
+        const wishBtn = document.getElementById('wishBtn');
+        const wishMessage = document.getElementById('wishMessage');
+        
+        // 点击按钮显示祝福信息并生成彩屑效果
+        wishBtn.addEventListener('click', function() {
+            // 显示祝福信息
+            wishMessage.classList.remove('hidden');
+            
+            // 禁用按钮防止重复点击
+            wishBtn.disabled = true;
+            wishBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            wishBtn.innerHTML = '<i class="fa fa-check mr-2"></i>已送上祝福';
+            
+            // 生成彩屑效果
+            createConfetti();
+        });
+        
+        // 创建彩屑效果
+        function createConfetti() {
+            const colors = ['#FF85A2', '#FFD700', '#C8A2C8', '#FF6B6B', '#4ECDC4', '#45B7D1'];
+            const container = document.body;
+            
+            // 创建50个彩屑
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // 随机颜色、位置和大小
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                
+                container.appendChild(confetti);
+                
+                // 动画结束后移除彩屑元素
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
